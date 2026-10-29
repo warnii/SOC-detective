@@ -1,0 +1,14 @@
+{
+  "name": "soc-detective",
+  "version": "0.2.0",
+  "private": true,
+  "description": "A local SOC incident triage and case-management training app.",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=22.5"
+  }
+}

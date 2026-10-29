@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#101821">
+    <title>SOC Detective</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="#" aria-label="SOC Detective home">
+          <span class="brand-mark" aria-hidden="true">SD</span>
+          <span>SOC <strong>Detective</strong></span>
+        </a>
+
+        <div class="workspace-label">WORKSPACE</div>
+        <nav aria-label="Main navigation">
+          <a class="nav-link active" href="#incidents" aria-current="page">
+            <span aria-hidden="true">▦</span> Case queue
+          </a>
+          <a class="nav-link" href="#overview">
+            <span aria-hidden="true">◷</span> Overview
+          </a>
+        </nav>
+
+        <div class="sidebar-footer">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>Demo environment</span>
+        </div>
+      </aside>
+
+      <main class="main-content" id="incidents">
+        <header class="topbar">
+          <div class="breadcrumbs">Workspace <span>/</span> Case queue</div>
+          <label class="analyst" for="analyst-name">
+            <span class="avatar" id="analyst-avatar">D</span>
+            <span class="visually-hidden">Analyst display name</span>
+            <input id="analyst-name" type="text" maxlength="80" value="Demo analyst" autocomplete="nickname">
+          </label>
+        </header>
+
+        <section class="page-heading" id="overview">
+          <div>
+            <p class="eyebrow">SECURITY OPERATIONS</p>
+            <h1>Case queue</h1>
+            <p class="subtitle">Triage security alerts, record findings, and track case response.</p>
+          </div>
+          <span class="updated-label"><span class="status-dot" aria-hidden="true"></span> Training environment</span>
+        </section>
+        <p class="persistence-message" id="persistence-message" role="status" aria-live="polite" hidden></p>
+
+        <section class="metrics" aria-label="Case summary">
+          <article class="metric-card">
+            <span class="metric-label">Open cases</span>
+            <strong class="metric-value" id="open-count">0</strong>
+            <span class="metric-note">Needs triage</span>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Investigating</span>
+            <strong class="metric-value" id="investigating-count">0</strong>
+            <span class="metric-note">In progress</span>
+          </article>
+          <article class="metric-card">
+            <span class="metric-label">Critical / high</span>
+            <strong class="metric-value" id="priority-count">0</strong>
+            <span class="metric-note">Across all cases</span>
+          </article>
+        </section>
+
+        <section class="overview-grid" aria-label="Operations overview">
+          <article class="overview-card">
+            <div class="overview-card-heading">
+              <div>
+                <h2>Severity mix</h2>
+                <p>Current cases by severity</p>
+              </div>
+              <span class="overview-total" id="severity-total">0 total</span>
+            </div>
+            <div class="severity-breakdown" id="severity-breakdown"></div>
+          </article>
+          <article class="overview-card">
+            <div class="overview-card-heading">
+              <div>
+                <h2>Priority watchlist</h2>
+                <p>Unresolved critical and high cases</p>
+              </div>
+              <span class="overview-total" id="watchlist-total">0 cases</span>
+            </div>
+            <ul class="watchlist" id="priority-watchlist"></ul>
+          </article>
+        </section>
+
+        <section class="queue-panel" aria-labelledby="queue-title">
+          <div class="panel-heading">
+            <div>
+              <h2 id="queue-title">Security cases</h2>
+              <p>Fictional training cases for the analyst workflow</p>
+            </div>
+            <div class="queue-actions">
+              <label class="search-box">
+                <span class="visually-hidden">Search cases</span>
+                <span aria-hidden="true">⌕</span>
+                <input id="search-input" type="search" placeholder="Search cases">
+              </label>
+              <button class="new-case-button" id="new-case-button" type="button">New case</button>
+            </div>
+          </div>
+
+          <div class="filters" aria-label="Filter cases">
+            <label>
+              <span class="visually-hidden">Filter by severity</span>
+              <select id="severity-filter">
+                <option value="all">All severities</option>
+                <option value="Critical">Critical</option>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+              </select>
+            </label>
+            <label>
+              <span class="visually-hidden">Filter by status</span>
+              <select id="status-filter">
+                <option value="all">All statuses</option>
+                <option value="Open">Open</option>
+                <option value="Investigating">Investigating</option>
+                <option value="Resolved">Resolved</option>
+              </select>
+            </label>
+            <span class="result-count" id="result-count"></span>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Case</th>
+                  <th scope="col">Severity</th>
+                  <th scope="col">Source</th>
+                  <th scope="col">Detected</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+              <tbody id="incident-list"></tbody>
+            </table>
+            <p class="empty-state" id="empty-state" hidden>No cases match these filters.</p>
+          </div>
+        </section>
+
+        <footer class="page-footer">SOC Detective <span>·</span> Fictional training data only</footer>
+      </main>
+
+      <aside class="detail-panel" aria-labelledby="detail-title" aria-live="polite">
+        <div class="detail-topline">
+          <span class="eyebrow">CASE DETAILS</span>
+          <span class="case-id" id="detail-id"></span>
+        </div>
+        <div id="detail-content">
+          <div class="detail-placeholder">
+            <span class="placeholder-icon" aria-hidden="true">⌕</span>
+            <h2 id="detail-title">Select a case</h2>
+            <p>Choose a case from the queue to review evidence, add notes, and track its response.</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <dialog class="case-dialog" id="new-case-dialog" aria-labelledby="new-case-title">
+      <form id="new-case-form">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">CASE MANAGEMENT</p>
+            <h2 id="new-case-title">Create a case</h2>
+          </div>
+          <button class="dialog-close" id="close-case-dialog" type="button" aria-label="Close dialog">×</button>
+        </div>
+        <label class="form-field">
+          <span>Case title</span>
+          <input name="title" type="text" maxlength="120" required>
+        </label>
+        <div class="form-grid">
+          <label class="form-field">
+            <span>Severity</span>
+            <select name="severity" required>
+              <option value="Critical">Critical</option>
+              <option value="High">High</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </label>
+          <label class="form-field">
+            <span>Source</span>
+            <input name="source" type="text" maxlength="80" value="Analyst reported" required>
+          </label>
+        </div>
+        <label class="form-field">
+          <span>Analyst summary</span>
+          <textarea name="description" rows="3" maxlength="2000" placeholder="What happened? What needs to be validated?"></textarea>
+        </label>
+        <div class="form-grid">
+          <label class="form-field">
+            <span>Account</span>
+            <input name="user" type="text" maxlength="120">
+          </label>
+          <label class="form-field">
+            <span>Asset</span>
+            <input name="host" type="text" maxlength="120">
+          </label>
+        </div>
+        <label class="form-field">
+          <span>Indicator</span>
+          <input name="indicator" type="text" maxlength="200" placeholder="Optional observable">
+        </label>
+        <div class="dialog-actions">
+          <button class="dialog-cancel" id="cancel-case-dialog" type="button">Cancel</button>
+          <button class="new-case-button" type="submit">Create case</button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>
